@@ -154,13 +154,21 @@ computed: {
       this.expanded=true;
       this.expandedResource=res;
       this.transformText();
+      this.checkIcon(res);
     },
     close(){
       this.expanded=false;
     },
-    checkIcon(icon){
-      this.icon=icon;
-    },
+    checkIcon(resource){
+           if(resource.acf.type_of_resource=="Webpage"){this.icon="webpage";}
+           if(resource.acf.type_of_resource=="Video tutorial"){this.icon="videoTutorial";}
+           if(resource.acf.type_of_resource=="Tool"){this.icon="tool";}
+           if(resource.acf.type_of_resource=="CMS"){this.icon="cms";}
+           if(resource.acf.type_of_resource=="LMS"){this.icon="lms";}
+           if(resource.acf.type_of_resource=="Document"){this.icon="document";}
+           if(resource.acf.type_of_resource=="Spreadsheet"){this.icon="spreadsheet";}
+           /* this.$emit("checkIcon", this.icon); */
+       },
 
     /* Messages and translations*/
     emptyMess(){

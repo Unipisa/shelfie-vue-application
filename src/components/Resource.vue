@@ -33,10 +33,6 @@ export default {
         this.checkIcon()
     },
    methods: {
-       /* expand(){
-            this.expandedResource=this.resource;
-            this.$emit("expand", this.expandedResource);
-       }, */
        checkIcon(){
            if(this.resource.acf.type_of_resource=="Webpage"){this.icon="webpage";}
            if(this.resource.acf.type_of_resource=="Video tutorial"){this.icon="videoTutorial";}
@@ -45,7 +41,6 @@ export default {
            if(this.resource.acf.type_of_resource=="LMS"){this.icon="lms";}
            if(this.resource.acf.type_of_resource=="Document"){this.icon="document";}
            if(this.resource.acf.type_of_resource=="Spreadsheet"){this.icon="spreadsheet";}
-           /* this.$emit("checkIcon", this.icon); */
        }
    }
 }
