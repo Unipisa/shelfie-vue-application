@@ -1,5 +1,5 @@
 <template>
-<div class="resource" @click="expand">
+<div class="resource">
 
     <i class="fa-solid fa-link icon" v-if="this.icon=='webpage'"></i>
     <i class="fa-solid fa-video icon" v-if="this.icon=='videoTutorial'"></i>
@@ -24,10 +24,7 @@ export default {
    },
    data(){
        return{
-           expandedResource: Object,
-
-            icon:String
-
+         icon:String
        }
    },
    emits: ['expand'],
@@ -36,10 +33,10 @@ export default {
         this.checkIcon()
     },
    methods: {
-       expand(){
+       /* expand(){
             this.expandedResource=this.resource;
             this.$emit("expand", this.expandedResource);
-       },
+       }, */
        checkIcon(){
            if(this.resource.acf.type_of_resource=="Webpage"){this.icon="webpage";}
            if(this.resource.acf.type_of_resource=="Video tutorial"){this.icon="videoTutorial";}

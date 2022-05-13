@@ -7,10 +7,9 @@
 
 <script>
 export default {
-  name: 'ireland',
+  name: 'Country',
   props: {
     country: String,
-    
   },
   components: {
      

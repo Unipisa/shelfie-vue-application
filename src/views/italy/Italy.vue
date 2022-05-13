@@ -51,8 +51,6 @@ name: 'Ireland',
     },
     created () {
       this.getArea();
-      console.log(this.$route.name)
-      if(this.$route.name=="Italy"){console.log("we are inside Italy")}
     },
     methods: {
       back(){

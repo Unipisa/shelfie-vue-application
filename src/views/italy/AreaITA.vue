@@ -14,7 +14,7 @@
   <div class="resources">
     <p v-if="empty" id="emptyMsg">Nessuna risorsa trovata in questa Area</p>
       <div :key="resource.id" v-for="resource in filteredRes">
-        <Resource :resource="resource" @expand="expand" :area="area" @checkIcon="checkIcon"/>
+        <Resource :resource="resource" @click="expand(resource)" :area="area" @checkIcon="checkIcon"/>
       </div>
   </div>
 </div>
