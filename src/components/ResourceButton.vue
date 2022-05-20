@@ -1,6 +1,5 @@
 <template>
 <div class="resource">
-
     <i class="fa-solid fa-link icon" v-if="this.icon=='webpage'"></i>
     <i class="fa-solid fa-video icon" v-if="this.icon=='videoTutorial'"></i>
     <i class="fa-solid fa-wrench icon" v-if="this.icon=='tool'"></i>
@@ -18,7 +17,7 @@
 
 <script>
 export default {
-   name: 'Resource',
+   name: 'ResourceButton',
    props: {
        resource: Object
    },
@@ -27,7 +26,6 @@ export default {
          icon:String
        }
    },
-   emits: ['expand'],
 
     mounted(){
         this.checkIcon()

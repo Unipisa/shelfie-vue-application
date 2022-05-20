@@ -1,5 +1,5 @@
 <template>
-<Intro intro="Explore the IO-2 Roadmap"/>
+<Intro intro="Explore the IO-2 Library"/>
 
   <router-view ></router-view>
 

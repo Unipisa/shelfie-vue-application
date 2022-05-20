@@ -50,7 +50,7 @@
 
 
 <script>
-import Resource from './Resource.vue'
+import Resource from './ResourceButton.vue'
 
 export default {
   name: 'Resources',

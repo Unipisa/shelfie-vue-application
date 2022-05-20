@@ -4,28 +4,31 @@
         <h2 class="backToCountries">Countries <i class="fa-solid fa-sort-up sort-up"></i></h2>
     </div>
 </router-link>
+
 <div id="box">
-  <router-link to="/italy" @click="backToAreas()"><i class="fa-solid fa-house" title="Home"></i></router-link>
-  
+  <router-link :to="{ name: 'Country', params: { country: this.country }}" ><i class="fa-solid fa-house" title="Home"></i></router-link>
   <div id="searchBox">
     <div class="header_box">
-      <img class="icona" alt="Italy flag" src="../../assets/Italy.png" >
-      <h3 id="countryTitle">Italy's Documentation</h3>
+      <img class="icona" alt="Country flag" :src="require(`../assets/${this.country}.png`)" >
+      <h3 id="countryTitle">{{title}}'s Documentation</h3>
     </div>
 
-<!-- --------------Areas Section-------------- -->
-    <div v-if="!resourceShow">
-      <h2 id="categories_title">Scegli l'Area <span id="SELFIE">SELFIE</span></h2>
-        <i title="Information" class="fa-solid fa-circle-info close"></i>
+ <!-- --------------Areas Section-------------- -->
+    <div>
+      <h2 id="categories_title">{{preTitle}}<span id="SELFIE">SELFIE </span>{{postTitle}}</h2>
+        <i title="Information" :class='info ? "fa-solid fa-circle-info infoClicked" : "fa-solid fa-circle-info info"' @click="getInfo"></i>
       <div class="ul">
       <li v-for="area in areas" :key="area.id">
-        <router-link :to="{name: 'AreaITA', params: {area: area.slug}}"><div @click="getResource(area.id);toResources(area)" class="category"><span class="title">{{area.name}}</span><span class="cat-description"> </span></div></router-link>
+        <router-link :to="{name: 'Area', params: {areaSlug: area.slug}}"><div class="category"><span class="title">{{area.name}}</span><span class="cat-description"></span></div></router-link>
       </li>
       </div>
       
+    <div v-if="info" class="infoBox">Here we can display some information about this country, maybe taken from Shelfie Website</div>
+
+
+
     </div>
-<!-- ---------------------------- -->
-      <AreaITA :resources="resources" :area="area" @back="back" v-if="resourceShow"/>
+ <!-- ---------------------------- -->
   </div>
   
 </div>
@@ -33,48 +36,57 @@
 </template>
 
 <script>
-import AreaITA from './AreaITA.vue'
+
 export default {
-name: 'Ireland',
+name: 'Country',
+    props: {
+    country: String
+  },
     components: {
-    AreaITA
         
     },
     data () {
       return {
-          resources: [],
-          resourceShow: false,
+          title: String,
+          preTitle:'',
+          postTitle:'',
+          info:false,
+          
           areas: [],
-          area: {}
-
+          area: {},
       }
     },
     created () {
-      this.getArea();
+      this.getArea(this.country);
+      this.setCountryStyle();
     },
     methods: {
-      back(){
-        this.resourceShow=false;
+      setCountryStyle(){ 
+          //for Documentation title
+          if(this.country=="italy"){this.title='Italy'};
+          if(this.country=="ireland"){this.title='Ireland'};
+          if(this.country=="denmark"){this.title='Denmark'};
+          if(this.country=="finland"){this.title='Finland'};
+          if(this.country=="portugal"){this.title='Portugal'};
+          if(this.country=="sweden"){this.title='Sweden'};
+          //for Choose SELFIE Area title
+          if(this.country=="italy"){this.preTitle="Scegli l'Area "};
+          if(this.country=="ireland"){this.preTitle="Choose "; this.postTitle="Area"}; 
+          if(this.country=="denmark"){this.preTitle='Vælg '; this.postTitle="-Område"};
+          if(this.country=="finland"){this.preTitle="Valitse "; this.postTitle="-Alue"};
+          if(this.country=="portugal"){this.preTitle="Escolha a Área ";};
+          if(this.country=="sweden"){this.preTitle="Välj "; this.postTitle="-Området"};
+      },     
+      async getArea(country) {
+        const response = await fetch('https://shelfie.labcd.unipi.it/wp-json/wp/v2/areas?per_page=100')
+        const data = await response.json()
+        this.areas = data;
+        this.areas = this.areas.filter(function(area){
+          return area.acf.country==country
+        })
       },
-     async getResource(area) {
-      const response = await fetch('https://shelfie.labcd.unipi.it/wp-json/wp/v2/resource?language=19&areas='+area)
-      const data = await response.json()
-      this.resources = data;
-      this.resourceShow=true;
-      },
-      async getArea() {
-      const response = await fetch('https://shelfie.labcd.unipi.it/wp-json/wp/v2/areas?per_page=100')
-      const data = await response.json()
-      this.areas = data;
-      this.areas = this.areas.filter(function(area){
-      return area.acf.country.includes("Italy");
-      })
-      },
-      backToAreas(){
-        this.resourceShow=false;
-      },
-      toResources(area){
-      this.area=area;
+      getInfo(){
+        this.info=!this.info;
       }
     }
 }
@@ -274,13 +286,36 @@ transform: scale(1.3);
 .white{
   color:white;
 }
-.close{
+.info{
   cursor:pointer;
   float:right;
   color:white;
   font-size:1.5rem;
   margin-top:-3.2rem;
   margin-right:-3rem;
+}
+.infoClicked{
+  cursor:pointer;
+  float:right;
+  color:rgb(240, 224, 105);
+  font-size:1.5rem;
+  margin-top:-3.2rem;
+  margin-right:-3rem;
+}
+.infoBox{
+  position:absolute;
+  top:2.5rem; right:4rem;
+  padding:2rem;
+  font-size:1.2rem;
+  line-height: 1.6rem;
+  text-align: justify;
+  border: 2px solid rgb(14,48,81);
+  background-color: rgb(242, 242, 155);
+  width:30rem;
+  height: 15rem;
+}
+.info:hover{
+  color:rgb(240, 224, 105);
 }
 .fa-house{
   cursor:pointer;

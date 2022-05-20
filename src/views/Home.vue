@@ -5,23 +5,23 @@
       <h3 id="descriptionText">Find the resources tailored for you</h3>
   </div>
   <div id="countryClosed">
-    <router-link  to="/italy"><Country country="Italy"   /></router-link>
-    <router-link  to="/ireland"><Country country="Ireland"  /></router-link>
-    <router-link  to="/denmark"><Country country="Denmark"  /></router-link>
-    <router-link  to="/finland"><Country country="Finland"  /></router-link>
-    <router-link  to="/sweden"><Country country="Sweden"  /></router-link>
-    <router-link  to="/portugal"><Country country="Portugal" /></router-link>
+    <router-link :to="{ name: 'Country', params: { country: 'italy' }}"><CountryButton country="Italy" /></router-link>
+    <router-link :to="{ name: 'Country', params: { country: 'ireland' }}"><CountryButton country="Ireland" /></router-link>
+    <router-link :to="{ name: 'Country', params: { country: 'denmark' }}"><CountryButton country="Denmark" /></router-link>
+    <router-link :to="{ name: 'Country', params: { country: 'finland' }}"><CountryButton country="Finland" /></router-link>
+    <router-link :to="{ name: 'Country', params: { country: 'sweden' }}"><CountryButton country="Sweden" /></router-link>
+    <router-link :to="{ name: 'Country', params: { country: 'portugal' }}"><CountryButton country="Portugal" /></router-link>
   </div>
   
 </template>
 
 <script>
-import Country from '../components/Country.vue'
+import CountryButton from '../components/CountryButton.vue'
 
 export default {
   name: 'Home',
   components: {
-    Country,
+    CountryButton,
   },
   data () {
     return {

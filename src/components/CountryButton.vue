@@ -7,7 +7,7 @@
 
 <script>
 export default {
-  name: 'Country',
+  name: 'CountryButton',
   props: {
     country: String,
   },
