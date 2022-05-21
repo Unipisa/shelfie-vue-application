@@ -10,7 +10,7 @@ import Resource from '../views/Resource.vue'
 
 const routes = [
     {
-        path: '/',
+        path: '/vue-2',
         name: 'Home',
         component: Home
     },
@@ -20,19 +20,19 @@ const routes = [
         component: PageNotFound,
     },
     {
-        path: '/:country',
+        path: '/vue-2/:country',
         name: 'Country',
         component: Country,
         props: true
     },
     {
-      path: '/:country/:areaSlug',
+      path: '/vue-2/:country/:areaSlug',
       name: 'Area',
       component: Area,
       props: true
     },
     {
-      path: '/:country/:areaSlug/:resourceSlug',
+      path: '/vue-2/:country/:areaSlug/:resourceSlug',
       name: 'Resource',
       component: Resource,
       props: true
