@@ -1,5 +1,5 @@
 <template>
-<router-link to="/">
+<router-link :to="{ name: 'Home'}">
     <div  title="Back to Countries">
         <h2 class="backToCountries">Countries <i class="fa-solid fa-sort-up sort-up"></i></h2>
     </div>
@@ -9,8 +9,8 @@
   <router-link :to="{ name: 'Country', params: { country: this.country }}" ><i class="fa-solid fa-house" title="Home"></i></router-link>
   <div id="searchBox">
     <div class="header_box">
-      <img class="icona" alt="Country flag" :src="require(`../assets/${this.country}.png`)" >
-      <h3 id="countryTitle">{{title}}'s Documentation</h3>
+      <img class="icona" alt="Country flag" :src="require(`../assets/${country}.png`)" >
+      <h3 id="countryTitle">{{title}}'s Resources</h3>
     </div>
 
  <!-- --------------Areas Section-------------- -->
@@ -60,7 +60,15 @@ name: 'Country',
       this.getArea(this.country);
       this.setCountryStyle();
     },
-    methods: {
+    methods: {   
+      async getArea(country) {
+        const response = await fetch('https://shelfie.labcd.unipi.it/wp-json/wp/v2/areas?per_page=100')
+        const data = await response.json()
+        this.areas = data;
+        this.areas = this.areas.filter(function(area){
+          return area.acf.country==country
+        })
+      },
       setCountryStyle(){ 
           //for Documentation title
           if(this.country=="italy"){this.title='Italy'};
@@ -76,15 +84,7 @@ name: 'Country',
           if(this.country=="finland"){this.preTitle="Valitse "; this.postTitle="-Alue"};
           if(this.country=="portugal"){this.preTitle="Escolha a Área ";};
           if(this.country=="sweden"){this.preTitle="Välj "; this.postTitle="-Området"};
-      },     
-      async getArea(country) {
-        const response = await fetch('https://shelfie.labcd.unipi.it/wp-json/wp/v2/areas?per_page=100')
-        const data = await response.json()
-        this.areas = data;
-        this.areas = this.areas.filter(function(area){
-          return area.acf.country==country
-        })
-      },
+      }, 
       getInfo(){
         this.info=!this.info;
       }

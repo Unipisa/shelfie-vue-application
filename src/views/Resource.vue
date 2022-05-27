@@ -1,5 +1,5 @@
 <template>
-<router-link to="/">
+<router-link :to="{ name: 'Home'}">
     <div  title="Back to Countries">
         <h2 class="backToCountries">Countries <i class="fa-solid fa-sort-up sort-up"></i></h2>
     </div>
@@ -9,8 +9,8 @@
   <router-link :to="{ name: 'Country', params: { country: this.country }}" ><i class="fa-solid fa-house" title="Home"></i></router-link>
   <div id="searchBox">
     <div class="header_box">
-      <img class="icona" alt="Italy flag" :src="require(`../assets/${country}.png`)" >
-      <h3 id="countryTitle">{{title}}'s Documentation</h3>
+      <img class="icona" alt="Country flag" :src="require(`../assets/${country}.png`)" >
+      <h3 id="countryTitle">{{title}}'s Resources</h3>
     </div>
 
     <div class="resourceBox">
@@ -90,10 +90,6 @@ computed: {
       this.description=this.resource[0].acf.description;
       this.transformText(this.country);
       this.checkIcon(this.resource)
-      /* this.link='Link: '+this.resource[0].acf.link;
-      this.target=this.resource[0].acf.target;
-      this.canEdit=this.resource[0].acf.can_edit;
-      this.subscription=this.resource[0].acf.subscription; */
     },
     setCountryStyle(){ 
           //for Documentation title
@@ -123,6 +119,7 @@ computed: {
        },
     //Fields Translation
     transformText(country){
+      this.link='Link: '+this.resource[0].acf.link;
       if(country=="italy"){
         if(this.resource[0].acf.can_edit==false) {this.canEdit="Personalizzabile: No"}
           else this.canEdit="Personalizzabile: Sì";

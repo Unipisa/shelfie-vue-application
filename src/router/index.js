@@ -1,6 +1,6 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import Home from '../views/Home.vue'
-import PageNotFound from '@/views/PageNotFound.vue'
+/* import PageNotFound from '@/views/PageNotFound.vue' */
 
 import Country from '../views/Country.vue'
 
@@ -10,29 +10,29 @@ import Resource from '../views/Resource.vue'
 
 const routes = [
     {
-        path: '/',
+        path: '/io2',
         name: 'Home',
         component: Home
     },
-    {
+    /* {
         path: '/:pathMatch(.*)*',
         name: "PageNotFound",
         component: PageNotFound,
-    },
+    }, */
     {
-        path: '/:country',
+        path: '/io2/:country',
         name: 'Country',
         component: Country,
         props: true
     },
     {
-      path: '/:country/:areaSlug',
+      path: '/io2/:country/:areaSlug',
       name: 'Area',
       component: Area,
       props: true
     },
     {
-      path: '/:country/:areaSlug/:resourceSlug',
+      path: '/io2/:country/:areaSlug/:resourceSlug',
       name: 'Resource',
       component: Resource,
       props: true

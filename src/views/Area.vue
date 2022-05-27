@@ -1,5 +1,5 @@
 <template>
-<router-link to="/">
+<router-link :to="{ name: 'Home'}">
     <div  title="Back to Countries">
         <h2 class="backToCountries">Countries <i class="fa-solid fa-sort-up sort-up"></i></h2>
     </div>
@@ -10,10 +10,10 @@
   <div id="searchBox">
     <div class="header_box">
       <img class="icona" alt="Italy flag" :src="require(`../assets/${country}.png`)" >
-      <h3 id="countryTitle">{{title}}'s Documentation</h3>
+      <h3 id="countryTitle">{{countryName}}'s Resources</h3>
     </div>
   <h2 id="categories_title"><router-link :to="{ name: 'Country', params: { country: this.country }}"><i id="back" title="Back to Areas" class="fa-solid fa-circle-arrow-left" ></i></router-link>
-      Area: <span class=area>{{areaName}}</span></h2>
+      {{areaPrefix}}: <span class=area>{{areaName}}</span></h2>
 <div class="resourceBox">
   <div id="filter" >
     <a id="target">Target School:</a>
@@ -67,7 +67,8 @@ export default {
     expanded:false,
     expandedResource: Object,
 
-    title:String,
+    countryName:String,
+    areaPrefix:String,
     areaName:'',
 
     icon:String,
@@ -79,9 +80,9 @@ export default {
     }
   },
   created(){
-    this.getLanguageId();
-    this.getAreaBySlug(this.areaSlug);
     this.setCountryStyle();
+    this.getAreaBySlug(this.areaSlug);
+    
     this.checkIfEmpty();
   },
 computed: {
@@ -92,40 +93,27 @@ computed: {
       const response = await fetch('https://shelfie.labcd.unipi.it/wp-json/wp/v2/areas?slug='+slug)
       const data = await response.json()
       this.area = data;
-      /* this.areaName=this.area[0].name */
-      this.getResource(this.languageId, this.area[0].id)
+      this.getResource(this.area[0].id)
+    },
+    async getResource(area) {
+      const response = await fetch('https://shelfie.labcd.unipi.it/wp-json/wp/v2/resource?areas='+area)
+      const data = await response.json()
+      this.resources = data;
+      this.getAll();
     },
     setCountryStyle(){ 
-          //for Documentation title
-          if(this.country=="italy"){this.title='Italy'};
-          if(this.country=="ireland"){this.title='Ireland'};
-          if(this.country=="denmark"){this.title='Denmark'};
-          if(this.country=="finland"){this.title='Finland'};
-          if(this.country=="portugal"){this.title='Portugal'};
-          if(this.country=="sweden"){this.title='Sweden'};
+                                    //for Documentation title  //for text before Area name
+          if(this.country=="italy"){this.countryName='Italy'; this.areaPrefix='Area'; this.languageId=19};
+          if(this.country=="ireland"){this.countryName='Ireland'; this.areaPrefix='Area';this.languageId=2};
+          if(this.country=="denmark"){this.countryName='Denmark'; this.areaPrefix='Område';this.languageId=18};
+          if(this.country=="finland"){this.countryName='Finland'; this.areaPrefix='Alue';this.languageId=20};
+          if(this.country=="portugal"){this.countryName='Portugal'; this.areaPrefix='Área';this.languageId=16};
+          if(this.country=="sweden"){this.countryName='Sweden'; this.areaPrefix='Området';this.languageId=17};
+          
           //for Area name, solution for faster loading page instead of retrieving area.name from area object
           this.areaName= this.areaSlug.charAt(0).toUpperCase() + this.areaSlug.slice(1).replaceAll('-', ' ')
+          if(this.areaName.includes("Leadership")){this.areaName="Leadership"}
       },
-      getLanguageId(){
-        if(this.country=="italy"){this.languageId=19};
-        if(this.country=="ireland"){this.languageId=2};
-        if(this.country=="denmark"){this.languageId=18};
-        if(this.country=="finland"){this.languageId=20};
-        if(this.country=="portugal"){this.languageId=16};
-        if(this.country=="sweden"){this.languageId=17};
-      },
-      async getResource(language, area) {
-        const response = await fetch('https://shelfie.labcd.unipi.it/wp-json/wp/v2/resource?language='+language+'&areas='+area)
-        const data = await response.json()
-        this.resources = data;
-        this.getAll();
-      },
-      /* async getResource(area) {
-        const response = await fetch('https://shelfie.labcd.unipi.it/wp-json/wp/v2/resource?areas='+area)
-        const data = await response.json()
-        this.resources = data;
-        this.getAll();
-      }, */
     checkIfEmpty(){
       if(this.resources.length === 0){this.allEmpty=true;}
       this.emptyMess();
