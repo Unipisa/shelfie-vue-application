@@ -11,6 +11,7 @@ import Resource from '../views/Resource.vue'
 const routes = [
     {
         path: '/io2',
+        path: '/vue-2',
         name: 'Home',
         component: Home
     },
@@ -21,18 +22,21 @@ const routes = [
     }, */
     {
         path: '/io2/:country',
+        path: '/vue-2/:country',
         name: 'Country',
         component: Country,
         props: true
     },
     {
       path: '/io2/:country/:areaSlug',
+      path: '/vue-2/:country/:areaSlug',
       name: 'Area',
       component: Area,
       props: true
     },
     {
       path: '/io2/:country/:areaSlug/:resourceSlug',
+      path: '/vue-2/:country/:areaSlug/:resourceSlug',
       name: 'Resource',
       component: Resource,
       props: true
