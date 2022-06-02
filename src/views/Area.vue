@@ -10,18 +10,18 @@
   <div id="searchBox">
     <div class="header_box">
       <img class="icona" alt="Italy flag" :src="require(`../assets/${country}.png`)" >
-      <h3 id="countryTitle">{{countryName}}'s Resources</h3>
+      <h3 id="countryTitle">{{countryResources}}</h3>
     </div>
   <h2 id="categories_title"><router-link :to="{ name: 'Country', params: { country: this.country }}"><i id="back" title="Back to Areas" class="fa-solid fa-circle-arrow-left" ></i></router-link>
       {{areaPrefix}}: <span class=area>{{areaName}}</span></h2>
 <div class="resourceBox">
   <div id="filter" >
-    <a id="target">Target School:</a>
-    <a :class='all ? "buttonT" : "buttonF"' @click="getAll()">All</a>
-    <a :class='primary ? "buttonT" : "buttonF"' @click="schoolFilter(89)">Primary</a>
-    <a :class='lowerS ? "buttonT" : "buttonF"' @click="schoolFilter(90)">Lower Secondary</a>
-    <a :class='upperS ? "buttonT" : "buttonF"' @click="schoolFilter(218)">Upper Secondary</a>
-    <a :class='vocational ? "buttonT" : "buttonF"' @click="schoolFilter(220)">Vocational</a>
+    <a id="target">{{schoolHeader}}:</a>
+    <a :class='all ? "buttonT" : "buttonF"' @click="getAll()">{{schools[0]}}</a>
+    <a :class='primary ? "buttonT" : "buttonF"' @click="schoolFilter(89)">{{schools[1]}}</a>
+    <a :class='lowerS ? "buttonT" : "buttonF"' @click="schoolFilter(90)">{{schools[2]}}</a>
+    <a :class='upperS ? "buttonT" : "buttonF"' @click="schoolFilter(218)">{{schools[3]}}</a>
+    <a :class='vocational ? "buttonT" : "buttonF"' @click="schoolFilter(220)">{{schools[4]}}</a>
   </div>
   <!-- Lista risorse -->
     <div class="resources">
@@ -67,27 +67,29 @@ export default {
     expanded:false,
     expandedResource: Object,
 
-    countryName:String,
+    countryResources:String,
     areaPrefix:String,
     areaName:'',
 
     icon:String,
     learning_need:String,
     target:String,
+    schoolHeader:String,
+    schools:[String, String, String, String, String],
     canEdit:String,
     subscription:String,
+
+    targetSchool:Array,
+    school:['', '', '', '', '']
     
     }
   },
-  created(){
+  created (){
     this.setCountryStyle();
     this.getAreaBySlug(this.areaSlug);
-    
     this.checkIfEmpty();
   },
-computed: {
-  
-},
+
   methods:{
     async getAreaBySlug(slug){
       const response = await fetch('https://shelfie.labcd.unipi.it/wp-json/wp/v2/areas?slug='+slug)
@@ -101,14 +103,18 @@ computed: {
       this.resources = data;
       this.getAll();
     },
+    /* async getTarget(country) {
+     const response = await fetch('https://shelfie.labcd.unipi.it/wp-json/wp/v2/pages?slug=translations-io2-'+country)
+        const data = await response.json()
+    }, */
     setCountryStyle(){ 
                                     //for Documentation title  //for text before Area name
-          if(this.country=="italy"){this.countryName='Italy'; this.areaPrefix='Area'; this.languageId=19};
-          if(this.country=="ireland"){this.countryName='Ireland'; this.areaPrefix='Area';this.languageId=2};
-          if(this.country=="denmark"){this.countryName='Denmark'; this.areaPrefix='Område';this.languageId=18};
-          if(this.country=="finland"){this.countryName='Finland'; this.areaPrefix='Alue';this.languageId=20};
-          if(this.country=="portugal"){this.countryName='Portugal'; this.areaPrefix='Área';this.languageId=16};
-          if(this.country=="sweden"){this.countryName='Sweden'; this.areaPrefix='Området';this.languageId=17};
+          if(this.country=="italy"){this.countryResources='Risorse italiane'; this.areaPrefix='Area'; this.languageId=19; this.schoolHeader="Scuole target"; this.schools[0]="Tutte";this.schools[1]="Primaria";this.schools[2]="Secondaria di primo grado";this.schools[3]="Secondaria di secondo grado";this.schools[4]="Professionale";};
+          if(this.country=="ireland"){this.countryResources='Irish Resources'; this.areaPrefix='Area';this.languageId=2; this.schoolHeader="Target school"; this.schools[0]="All";this.schools[1]="Primary";this.schools[2]="Lower secondary";this.schools[3]="Upper secondary";this.schools[4]="Vocational";};
+          if(this.country=="denmark"){this.countryResources='Danske Ressourcer'; this.areaPrefix='Område';this.languageId=18; this.schoolHeader="Target school"; this.schools[0]="All";this.schools[1]="Primary";this.schools[2]="Lower secondary";this.schools[3]="Upper secondary";this.schools[4]="Vocational";};
+          if(this.country=="finland"){this.countryResources='Suomalaiset Resurssit'; this.areaPrefix='Alue';this.languageId=20; this.schoolHeader="Target school"; this.schools[0]="All";this.schools[1]="Primary";this.schools[2]="Lower secondary";this.schools[3]="Upper secondary";this.schools[4]="Vocational";};
+          if(this.country=="portugal"){this.countryResources='Recursos portugueses'; this.areaPrefix='Área';this.languageId=16; this.schoolHeader="Target school"; this.schools[0]="All";this.schools[1]="Primary";this.schools[2]="Lower secondary";this.schools[3]="Upper secondary";this.schools[4]="Vocational";};
+          if(this.country=="sweden"){this.countryResources='Svenska Resurser'; this.areaPrefix='Området';this.languageId=17; this.schoolHeader="Target school"; this.schools[0]="All";this.schools[1]="Primary";this.schools[2]="Lower secondary";this.schools[3]="Upper secondary";this.schools[4]="Vocational";};
           
           //for Area name, solution for faster loading page instead of retrieving area.name from area object
           this.areaName= this.areaSlug.charAt(0).toUpperCase() + this.areaSlug.slice(1).replaceAll('-', ' ')
@@ -185,47 +191,56 @@ computed: {
   justify-content: flex-start;
   flex-flow: row wrap;
   align-items: center;
+  width:100%;
 }
 #target{
   font-size: 1.1rem;;
-  margin-left:2rem;
-  margin-right: 1rem;
+  margin-left:0rem;
+  margin-right: 0.6rem;
   font-weight: bold;
-  color:white
+  color:white;
+  margin-top:0.35rem;
 }
 .buttonF{
   padding-top:0.3rem;
+  padding-left:0.3rem;
+  padding-right:0.3rem;
   text-align: center;
   font-weight: bold;
   margin-right:0.3rem;
   margin-left:0.3rem;
   cursor:pointer;
   background-color:white;
-  width: 9rem;
+  min-width: 9rem;
   height: 1.5rem;
   border-radius: 5px;
+  margin-top:0.5rem;
+  
 }
 .buttonF:hover{
  background-color: rgb(225, 236, 245)
 }
 .buttonT{
   padding-top:0.3rem;
+  padding-left:0.3rem;
+  padding-right:0.3rem;
   text-align: center;
   font-weight: bold;
   margin-right:0.3rem;
   margin-left:0.3rem;
   cursor:pointer;
   background-color:white;
-  width: 10rem;
+  min-width: 9rem;
   height: 1.5rem;
   border-radius: 5px;
   background-color: rgb(249, 118, 146);
   color:white;
+  margin-top:0.5rem;
 }
 .resourceBox{
   width:80%;
   margin: 0 auto;
-  margin-top:3rem;
+  margin-top:2.5rem;
 }
 .resources{
   padding-top:3rem;
@@ -313,7 +328,6 @@ computed: {
   }
   .area{
   color:#f8b12c;
-  /* rgb(60, 243, 60) */
 }
 #SELFIE{
   color:rgb(139,210,219);
@@ -444,28 +458,29 @@ color:#ee8003;
 transform: scale(1.3);
 }
 .header_box{
-  padding-top:1rem;
-  width:100%;
-  display: inline-flex;
-  text-align: left;
+  position:absolute;
+  margin-left:1rem;
+  left:4.5%;
+  top:2rem;
+  display:flex
 }
 .icona{
-  margin-left:0.7rem;
   margin-top:10px;
   width:30px;
   height:30px;
 }
 #countryTitle{
   margin-left:0.2rem;
+  position: relative;
   color:white;
-  text-align: left;
-  font-size:1rem;
+  font-size:0.95rem;
+  top:0.12rem;
 }
 #categories_title{
   color:white;
   font-size:1.4rem;
   margin: 0 auto;
-  margin-top:-2.1rem;
+  margin-top:2.1rem;
   padding-bottom:1.5rem;
 }
 .subTitles{
@@ -494,11 +509,79 @@ transform: scale(1.3);
   font-size:1.4rem;
   color:rgb(255, 255, 255);
   position:absolute;
-  left:2.3rem;
-  top:2.65rem;
+  left:2.5%;
+  top:2.66rem;
 }
 .fa-house:hover{
   transform: scale(1.15);
   color:rgb(255, 255, 255);
+}
+@media (max-width: 1150px) {
+  .ul{
+    justify-content: center;
+  }
+  
+ }
+ @media (max-width: 800px) {
+  li{
+    width:16rem;
+  }
+  .fa-house{
+    top:1.5rem;
+    left:4%;
+  }
+  .header_box{
+    position:relative;
+    justify-content: center;
+    margin-left:0rem;
+    left:0rem;
+    top:1.2rem;
+  }
+  #categories_title{
+    margin-top:0.8rem;
+    padding-bottom:0rem;
+  }
+ }
+ @media (max-width: 600px) {
+   .backToCountries{
+     width:5.6rem;
+    height:2.6rem;
+    margin:0.4rem;
+    font-size:0.8rem;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    position:absolute;
+    top:0.2rem;
+    left:0.2rem;
+    padding:0.1rem;
+   }
+    
+ }
+@media (max-width: 400px) {
+    .header_box{
+    left:0rem;
+    top:1.8rem;
+  }
+ #filter{
+    justify-content: center;
+  }
+  #categories_title{
+    margin-top:1.2rem;
+    padding-bottom:0.8rem;
+  }
+  .buttonF, .buttonT{
+    height:auto;
+  }
+  .fa-house {
+    top:1.1rem;
+  }
+}
+@media (min-width: 801px) and (max-width: 1100px) {
+   #categories_title{
+   max-width:20rem;
+   line-height: 2rem;
+  }
 }
 </style>

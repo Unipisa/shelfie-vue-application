@@ -22,5 +22,13 @@ export default {
   width:9.5rem;
   padding:0.5rem;
 }
-
+@media (max-width: 400px) {
+  #intro1{
+  font-size:1.3rem;
+}
+#logo{
+  width:8rem;
+  
+}
+}
 </style>

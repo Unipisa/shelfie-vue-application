@@ -20,6 +20,10 @@ import CountryButton from '../components/CountryButton.vue'
 
 export default {
   name: 'Home',
+  props: {
+    //for transaltions not used
+    school:{}
+  },
   components: {
     CountryButton,
   },
@@ -68,5 +72,10 @@ a {
   font-size:1rem;
   margin-left:0.4rem;
   margin-top:0.5rem;
+}
+@media (max-width: 400px) {
+  .img{
+  width:12rem;
+}
 }
 </style>

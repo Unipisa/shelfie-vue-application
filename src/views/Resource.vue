@@ -10,13 +10,13 @@
   <div id="searchBox">
     <div class="header_box">
       <img class="icona" alt="Country flag" :src="require(`../assets/${country}.png`)" >
-      <h3 id="countryTitle">{{title}}'s Resources</h3>
+      <h3 id="countryTitle">{{countryResources}}</h3>
     </div>
 
     <div class="resourceBox">
   <div class="expanded-resource">
     <div class="resContent">
-      <i title="Close" class="fa-solid fa-xmark close" @click="back"></i>
+      <router-link :to="{ name: 'Area'}"><i title="Close" class="fa-solid fa-xmark close"></i></router-link>
       <i class="fa-solid fa-link icon" v-if="this.icon=='webpage'"></i>
       <i class="fa-solid fa-video icon" v-if="this.icon=='videoTutorial'"></i>
       <i class="fa-solid fa-wrench icon" v-if="this.icon=='tool'"></i>
@@ -26,12 +26,14 @@
       <h4 class="typeOfResource">{{typeOfResource}}</h4>
       <h2 class="title">{{titleRendered}}</h2>
       <div class="resText">
-        <p >{{description}}</p>
-        <p class="field">{{target}}</p>
-        <p class="field">{{learning_need}}</p>
-        <p class="field">{{canEdit}}</p>
-        <p class="field">{{subscription}}</p>
-        <h4><a :href="link" target="_blank">{{link}}</a></h4>
+        <p>{{description}}</p>
+        <p><span class="field">{{targetPrefix}}</span>{{target}}</p>
+        <p><span class="field"></span>{{school}}</p>
+        <p><span class="field">{{agePrefix}}</span>{{age}}</p>
+        <p><span class="field">{{learning_needPrefix}}</span>{{learning_need}}</p>
+        <p><span class="field">{{canEditPrefix}}</span>{{canEdit}}</p>
+        <p><span class="field">{{subscriptionPrefix}}</span>{{subscription}}</p>
+        <p><span class="field">{{linkPrefix}}</span><a :href="link" target="_blank">{{link}}</a></p>
       </div>
     </div>
 </div>
@@ -47,7 +49,8 @@ export default {
   name: 'Area',
   props: {
     country: String,
-    resourceSlug:String, 
+    resourceSlug:String,
+    areaSlug:String
   },
   components: {
 
@@ -55,7 +58,7 @@ export default {
   data(){
     return{
     resource: Object,
-    title:String,
+    countryResources:String,
     icon:String,
 
     typeOfResource:'',
@@ -63,19 +66,24 @@ export default {
     description:'',
     learning_need:'',
     target:'',
+    school:'',
+    age:'',
     canEdit:'',
     subscription:'',
     link:'',
-    }
-  },
-  mounted(){
     
+    learning_needPrefix:'',
+    targetPrefix:'',
+    schoolPrefix:'',
+    agePrefix:'',
+    canEditPrefix:'',
+    subscriptionPrefix:'',
+    linkPrefix:''
+    }
   },
   created(){
     this.getResourceBySlug(this.resourceSlug);
     this.setCountryStyle();
-    /* this.transformText(this.country)
-    this.checkIcon(this.resource) */
   },
 computed: {
   
@@ -93,16 +101,13 @@ computed: {
     },
     setCountryStyle(){ 
           //for Documentation title
-          if(this.country=="italy"){this.title='Italy'};
-          if(this.country=="ireland"){this.title='Ireland'};
-          if(this.country=="denmark"){this.title='Denmark'};
-          if(this.country=="finland"){this.title='Finland'};
-          if(this.country=="portugal"){this.title='Portugal'};
-          if(this.country=="sweden"){this.title='Sweden'};
+          if(this.country=="italy"){this.countryResources='Risorse italiane'};
+          if(this.country=="ireland"){this.countryResources='Irish Resources'};
+          if(this.country=="denmark"){this.countryResources='Danske Ressourcer'};
+          if(this.country=="finland"){this.countryResources='Suomalaiset Resurssit'};
+          if(this.country=="portugal"){this.countryResources='Recursos portugueses'};
+          if(this.country=="sweden"){this.countryResources='Svenska Resurser'};
       },
-    back(){
-      this.$router.go(-1);
-    },
     checkIfEmpty(){
       if(this.resources.length === 0){this.allEmpty=true;}
       this.emptyMess();
@@ -115,79 +120,108 @@ computed: {
            if(resource[0].acf.type_of_resource=="LMS"){this.icon="lms";}
            if(resource[0].acf.type_of_resource=="Document"){this.icon="document";}
            if(resource[0].acf.type_of_resource=="Spreadsheet"){this.icon="spreadsheet";}
-           /* this.$emit("checkIcon", this.icon); */
        },
     //Fields Translation
     transformText(country){
-      this.link='Link: '+this.resource[0].acf.link;
-      if(country=="italy"){
-        if(this.resource[0].acf.can_edit==false) {this.canEdit="Personalizzabile: No"}
-          else this.canEdit="Personalizzabile: Sì";
-        if(this.resource[0].acf.subscription==false) {this.subscription="Sottoscrizione: No"}
-          else this.canEdit="Sottoscrizione: Sì";
+      this.linkPrefix="Link: ";
+      this.link=this.resource[0].acf.link;
+      if(country=="italy"){   
+        this.canEditPrefix='Personalizzabile: ';
+        if(this.resource[0].acf.can_edit==false) {this.canEdit="No"}
+          else this.canEdit="Sì";
+        this.subscriptionPrefix='Sottoscrizione: ' ;
+        if(this.resource[0].acf.subscription==false) {this.subscription="No"}
+          else this.subscription="Sì";
         if(this.resource[0].acf.learning_need==""){this.learning_need=""}
-          else this.learning_need="Bisogno di apprendimento: "+this.resource[0].acf.learning_need.join(', ');
+          else {this.learning_need=this.resource[0].acf.learning_need.join(', ');this.learning_needPrefix='Bisogno di apprendimento: ';}
           this.learning_need=this.learning_need.replace('Manage video content', 'Gestire  contenuti video').replace('Manage interactive activity content', 'Gestire contenuti di attività interattive').replace('Manage audio content','Gestire contenuti audio').replace('Manage learning content','Gestire contenuti didattici').replace('Communicate and discuss','Comunicare e discutere').replace('Engagement', 'Coinvolgere').replace('Manage reading content','Gestire contenuti di lettura').replace('Share document','Condividere documenti').replace('Manage image content', 'Gestire contenuti immagine').replace('Manage document','Gestire documenti').replace('Manage sheet', 'Gestire fogli elettronici').replace('Manage presentation','Gestire presentazioni').replace('Brain storming and share ideas','Brain storming e condivisione di idee').replace('Collaborative programming tools','Strumenti di programmazione collaborativa').replace('Coding','Codifica').replace('Create a website','Creare un sito web');
-          this.target="Target: "+ this.resource[0].acf.target.join(', ');
+           this.targetPrefix='Target: ' ;
+          this.target=this.resource[0].acf.target.join(', ');
           this.target=this.target.replace('Teacher', 'Insegnanti').replace('Student', 'Studenti').replace('Leader', 'Dirigenti scolastici');
+          if(!this.resource[0].acf.minimum_age){this.age=" "}
+          else {this.age=this.resource[0].acf.minimum_age + " - " + this.resource[0].acf.maximum_age;this.agePrefix="Fascia d'età: ";}
       }
       if(country=="ireland"){
-        if(this.resource[0].acf.can_edit==false){this.canEdit="Customisable: No"}
-        else this.canEdit="Customisable: Yes";
-        if(this.resource[0].acf.subscription==false) {this.subscription="Subscription: No"}
-          else this.canEdit="Subscription: Yes";
+        this.canEditPrefix='Customisable: ';
+        if(this.resource[0].acf.can_edit==false){this.canEdit="No"}
+        else this.canEdit="Yes";
+        this.subscriptionPrefix='Subscription: ' ;
+        if(this.resource[0].acf.subscription==false) {this.subscription="No"}
+          else this.subscription="Yes";
         if(this.resource[0].acf.learning_need==""){this.learning_need=""}
-         else this.learning_need="Learning need: "+this.resource[0].acf.learning_need.join(', ');
+         else {this.learning_need=+this.resource[0].acf.learning_need.join(', ');this.learning_needPrefix='Learning need: ';}
         //  this.learning_need=this.learning_need.replace('Manage video content',).replace('Manage interactive activity content',).replace('Manage audio content',).replace('Manage learning content',).replace('Communicate and discuss',).replace('Engagement',).replace('Manage reading content',).replace('Share document').replace('Manage image content',).replace('Manage document',).replace('Manage sheet',).replace('Manage presentation',).replace('Brain storming and share ideas',).replace('Collaborative programming tools',).replace('Coding',).replace('Create a website',);
-           this.target="Target: "+ this.resource[0].acf.target.join(', ');
+           this.targetPrefix='Target: ' ;
+           this.target=this.resource[0].acf.target.join(', ');
            this.target=this.target.replace('Teacher', 'Teachers').replace('Student', 'Students').replace('Leader', 'School leaders');
+          if(!this.resource[0].acf.minimum_age){this.age=""}
+          else {this.age=this.resource[0].acf.minimum_age + " - " + this.resource[0].acf.maximum_age;this.agePrefix="Age range: ";}
       }
       if(country=="denmark"){
-        if(this.resource[0].acf.can_edit==false){this.canEdit="Kan tilpasses: Nej"}
-        else this.canEdit="Kan tilpasses: Ja";
-        if(this.resource[0].acf.subscription==false) {this.subscription="Abonnement: Nej"}
-          else this.canEdit="Abonnement: Ja";
+        this.canEditPrefix='Kan tilpasses: ';
+        if(this.resource[0].acf.can_edit==false){this.canEdit="Nej"}
+        else this.canEdit="Ja";
+        this.subscriptionPrefix='Abonnement: ' ;
+        if(this.resource[0].acf.subscription==false) {this.subscription="Nej"}
+          else this.subscription="Ja";
         if(this.resource[0].acf.learning_need==""){this.learning_need=""}
-         else this.learning_need="Læringsbehov: "+this.resource[0].acf.learning_need.join(', ');
+         else {this.learning_need=this.resource[0].acf.learning_need.join(', ');this.learning_needPrefix='Læringsbehov: ';}
         //  this.learning_need=this.learning_need.replace('Manage video content',).replace('Manage interactive activity content',).replace('Manage audio content',).replace('Manage learning content',).replace('Communicate and discuss',).replace('Engagement',).replace('Manage reading content',).replace('Share document').replace('Manage image content',).replace('Manage document',).replace('Manage sheet',).replace('Manage presentation',).replace('Brain storming and share ideas',).replace('Collaborative programming tools',).replace('Coding',).replace('Create a website',);
-           this.target="Målgruppe: "+ this.resource[0].acf.target.join(', ');
+           this.targetPrefix='Målgruppe: ' ;
+           this.target=this.resource[0].acf.target.join(', ');
            this.target=this.target.replace('Teacher', 'Lærere').replace('Student', 'Studerende').replace('Leader', 'Skoleledere');
+          if(!this.resource[0].acf.minimum_age){this.age=""}
+          else {this.age=this.resource[0].acf.minimum_age + " - " + this.resource[0].acf.maximum_age;this.agePrefix="Aldersspænd: ";}
       }
-      if(country=="finland"){
-        if(this.resource[0].acf.can_edit==false){this.canEdit="Muokattava: Ei"}
-        else this.canEdit="Muokattava: Kyllä";
-        if(this.resource[0].acf.subscription==false) {this.subscription="Tilaus: Ei"}
-          else this.canEdit="Tilaus: Kyllä";
+      if(country=="finland"){  
+        this.canEditPrefix='Muokattava: ';
+        if(this.resource[0].acf.can_edit==false){this.canEdit="Ei"}
+        else this.canEdit="Kyllä";
+        this.subscriptionPrefix='Tilaus: ' ;
+        if(this.resource[0].acf.subscription==false) {this.subscription="Ei"}
+          else this.subscription="Kyllä";
         if(this.resource[0].acf.learning_need==""){this.learning_need=""}
-         else this.learning_need="Oppimisen tarvetta: "+this.resource[0].acf.learning_need.join(', ');
+         else {this.learning_need=this.resource[0].acf.learning_need.join(', ');this.learning_needPrefix='Oppimisen tarvetta: ';}
         //  this.learning_need=this.learning_need.replace('Manage video content',).replace('Manage interactive activity content',).replace('Manage audio content',).replace('Manage learning content',).replace('Communicate and discuss',).replace('Engagement',).replace('Manage reading content',).replace('Share document').replace('Manage image content',).replace('Manage document',).replace('Manage sheet',).replace('Manage presentation',).replace('Brain storming and share ideas',).replace('Collaborative programming tools',).replace('Coding',).replace('Create a website',);
-           this.target="Kohdista ihmisiä: "+ this.resource[0].acf.target.join(', ');
+           this.targetPrefix='Kohdista ihmisiä: ' ;
+           this.target=this.resource[0].acf.target.join(', ');
            this.target=this.target.replace('Teacher', 'Opettajat').replace('Student', 'Opiskelijat').replace('Leader', 'Koulujen johtajat'); 
+          if(!this.resource[0].acf.minimum_age){this.age=""}
+          else {this.age=this.resource[0].acf.minimum_age + " - " + this.resource[0].acf.maximum_age;this.agePrefix="Ikähaarukka: ";}
       }
       if(country=="portugal"){
-        if(this.resource[0].acf.can_edit==false){this.canEdit="Customizável: Não"}
-        else this.canEdit="Customizável: Sim";
-        if(this.resource[0].acf.subscription==false) {this.subscription="Inscrição: Não"}
-          else this.canEdit="Inscrição: Sim";
+        this.canEditPrefix='Customizável: ';
+        if(this.resource[0].acf.can_edit==false){this.canEdit="Não"}
+        else this.canEdit="Sim";
+        this.subscriptionPrefix='Inscrição: ' ;
+        if(this.resource[0].acf.subscription==false) {this.subscription="Não"}
+          else this.subscription="Sim";
         if(this.resource[0].acf.learning_need==""){this.learning_need=""}
-         else this.learning_need="Necessidade de aprendizado: "+this.resource[0].acf.learning_need.join(', ');
+         else {this.learning_need=this.resource[0].acf.learning_need.join(', ');this.learning_needPrefix='Necessidade de aprendizado: ';}
         //  this.learning_need=this.learning_need.replace('Manage video content',).replace('Manage interactive activity content',).replace('Manage audio content',).replace('Manage learning content',).replace('Communicate and discuss',).replace('Engagement',).replace('Manage reading content',).replace('Share document').replace('Manage image content',).replace('Manage document',).replace('Manage sheet',).replace('Manage presentation',).replace('Brain storming and share ideas',).replace('Collaborative programming tools',).replace('Coding',).replace('Create a website',);
-           this.target="Alvo: "+ this.resource[0].acf.target.join(', ');
+           this.targetPrefix='Alvo: ' ;
+           this.target=this.resource[0].acf.target.join(', ');
            this.target=this.target.replace('Teacher', 'Professores').replace('Student', 'Alunos').replace('Leader', 'Líderes escolares');
+          if(!this.resource[0].acf.minimum_age){this.age=""}
+          else {this.age=this.resource[0].acf.minimum_age + " - " + this.resource[0].acf.maximum_age;this.agePrefix="Faixa etária: ";}
       }
       if(country=="sweden"){
-        if(this.resource[0].acf.can_edit==false){this.canEdit="Anpassningsbar: Nej"}
-        else this.canEdit="Anpassningsbar: Ja";
-        if(this.resource[0].acf.subscription==false) {this.subscription="Prenumeration: Nej"}
-          else this.canEdit="Prenumeration: Ja";
+        this.canEditPrefix='Anpassningsbar: ';
+        if(this.resource[0].acf.can_edit==false){this.canEdit="Nej"}
+        else this.canEdit="Ja";
+        this.subscriptionPrefix='Prenumeration: ' ;
+        if(this.resource[0].acf.subscription==false) {this.subscription="Nej"}
+          else this.subscription="Ja";
         if(this.resource[0].acf.learning_need==""){this.learning_need=""}
-         else this.learning_need="Lärande behov: "+this.resource[0].acf.learning_need.join(', ');
+         else {this.learning_need=this.resource[0].acf.learning_need.join(', ');this.learning_needPrefix='Lärande behov: ';}
         //  this.learning_need=this.learning_need.replace('Manage video content',).replace('Manage interactive activity content',).replace('Manage audio content',).replace('Manage learning content',).replace('Communicate and discuss',).replace('Engagement',).replace('Manage reading content',).replace('Share document').replace('Manage image content',).replace('Manage document',).replace('Manage sheet',).replace('Manage presentation',).replace('Brain storming and share ideas',).replace('Collaborative programming tools',).replace('Coding',).replace('Create a website',);
-           this.target="Rikta in dig på människor: "+ this.resource[0].acf.target.join(', ');
+           this.targetPrefix='Rikta in dig på människor: ' ;
+           this.target=this.resource[0].acf.target.join(', ');
            this.target=this.target.replace('Teacher', 'Lärare').replace('Student', 'Studenter').replace('Leader', 'Skolledare');
-      }
-        
-      }
+          if(!this.resource[0].acf.minimum_age){this.age=""}
+          else {this.age=this.resource[0].acf.minimum_age + " - " + this.resource[0].acf.maximum_age;this.agePrefix="Åldersintervall: ";}
+      }    
+    }
   }
 }
 </script>
@@ -235,7 +269,7 @@ computed: {
   color:white;
 }
 .resourceBox{
-  width:80%;
+  width:auto;
   margin: 0 auto;
   margin-top:3rem;
 }
@@ -257,7 +291,7 @@ computed: {
     min-height: 28rem;
     margin: 0 auto;
     margin-top:-1rem;
-    width:64rem;
+    width:85%;
     border-radius: 20px;
     word-wrap: break-word;
     border: 1px solid;
@@ -265,25 +299,23 @@ computed: {
 .typeOfResource{
   position:absolute;
   left:4rem;
-  top:1.6rem;
+  top:1.2rem;
 }
 .icon{
     position: absolute;
    left: 2rem;
-   top: 2.75rem;
+   top: 2.4rem;
    font-size:1.2rem;
 }
 .resContent{
-  max-width:50rem;
+  max-width:80%;
   margin:0 auto;
   padding-bottom:3rem;
 }
 .resText{
+  padding-top:1.5rem;
   text-align: justify;
   line-height: 1.6rem;
-}
-.title{
-  line-height: 5rem;
 }
 .close{
   color:rgb(14,48,81);
@@ -328,9 +360,6 @@ computed: {
   .area{
   color:#f8b12c;
   /* rgb(60, 243, 60) */
-}
-#SELFIE{
-  color:rgb(139,210,219);
 }
 #searchBox{
   width:90%;
@@ -398,8 +427,10 @@ li{
   font-weight: bold;
   font-size: 1.18rem;
   display: inline-block;
-  width:100%;
-  margin-bottom: 0.5rem
+  width:80%;
+  margin-bottom: 0.5rem;
+   margin-top:3rem;
+  line-height: 1.4rem;
 }
 .cat-description{
   display: inline-block;
@@ -471,9 +502,10 @@ transform: scale(1.3);
 }
 #countryTitle{
   margin-left:0.2rem;
+  position: relative;
   color:white;
-  text-align: left;
-  font-size:1rem;
+  font-size:0.95rem;
+  top:0.12rem;
 }
 #categories_title{
   color:white;
@@ -500,11 +532,80 @@ transform: scale(1.3);
   font-size:1.4rem;
   color:rgb(255, 255, 255);
   position:absolute;
-  left:2.3rem;
-  top:2.65rem;
+  left:2.5%;
+  top:2.66rem;
 }
 .fa-house:hover{
   transform: scale(1.15);
   color:rgb(255, 255, 255);
+}
+@media(max-width: 1100px) {
+  .expanded-resource{
+    width:92%;   
+  }
+  
+}
+@media (min-width: 800px) and (max-width: 1100px) {
+.title{
+  width:60%;
+  }
+}
+ @media (max-width: 800px) {
+   .title{
+  width:90%;
+  }
+  li{
+    width:16rem;
+  }
+  .fa-house{
+    top:1.5rem;
+    left:4%;
+  }
+  .header_box{
+    position:relative;
+    justify-content: center;
+    margin-left:0rem;
+    left:0rem;
+    top:0rem;
+  }
+  .title{
+  margin-top:6.5rem;
+  line-height: 1.4rem;
+}
+ }
+ @media (max-width: 600px) {
+   .backToCountries{
+     width:5.6rem;
+    height:2.6rem;
+    margin:0.4rem;
+    font-size:0.8rem;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    position:absolute;
+    top:0.2rem;
+    left:0.2rem;
+    padding:0.1rem;
+   }
+   .expanded-resource{
+    width:100%;   
+  }
+  .resText{
+    padding-top:1rem;
+  }
+    
+ }
+@media (max-width: 400px) {
+    .header_box{
+    left:0rem;
+    top:0rem;
+  }
+  .fa-house {
+    top:1.1rem;
+  }
+}
+@media (min-width: 801px) and (max-width: 1100px) {
+   
 }
 </style>

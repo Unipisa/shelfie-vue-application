@@ -1,7 +1,7 @@
 <template>
 <Intro intro="Explore the IO-2 Library"/>
 
-  <router-view ></router-view>
+  <router-view></router-view>
 
 </template>
 
@@ -15,7 +15,6 @@ export default {
   },
   data () {
     return {
-
     }
   },
 }
