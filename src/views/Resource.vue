@@ -145,7 +145,7 @@ computed: {
            this.targetPrefix='Target: ' ;
           this.target=this.resource[0].acf.target.join(', ');
           this.target=this.target.replace('Teacher', 'Insegnanti').replace('Student', 'Studenti').replace('Leader', 'Dirigenti scolastici');
-          if(!this.resource[0].acf.minimum_age){this.age=" "}
+          if(!this.resource[0].acf.minimum_age||!this.resource[0].acf.maximum_age){this.age=" "}
           else {this.age=this.resource[0].acf.minimum_age + " - " + this.resource[0].acf.maximum_age;this.agePrefix="Fascia d'età: ";}
       }
       if(country=="ireland"){
@@ -161,7 +161,7 @@ computed: {
            this.targetPrefix='Target: ' ;
            this.target=this.resource[0].acf.target.join(', ');
            this.target=this.target.replace('Teacher', 'Teachers').replace('Student', 'Students').replace('Leader', 'School leaders');
-          if(!this.resource[0].acf.minimum_age){this.age=""}
+          if(!this.resource[0].acf.minimum_age||!this.resource[0].acf.maximum_age){this.age=""}
           else {this.age=this.resource[0].acf.minimum_age + " - " + this.resource[0].acf.maximum_age;this.agePrefix="Age range: ";}
       }
       if(country=="denmark"){
@@ -177,7 +177,7 @@ computed: {
            this.targetPrefix='Målgruppe: ' ;
            this.target=this.resource[0].acf.target.join(', ');
            this.target=this.target.replace('Teacher', 'Lærere').replace('Student', 'Studerende').replace('Leader', 'Skoleledere');
-          if(!this.resource[0].acf.minimum_age){this.age=""}
+          if(!this.resource[0].acf.minimum_age||!this.resource[0].acf.maximum_age){this.age=""}
           else {this.age=this.resource[0].acf.minimum_age + " - " + this.resource[0].acf.maximum_age;this.agePrefix="Aldersspænd: ";}
       }
       if(country=="finland"){  
@@ -193,7 +193,7 @@ computed: {
            this.targetPrefix='Kohdista ihmisiä: ' ;
            this.target=this.resource[0].acf.target.join(', ');
            this.target=this.target.replace('Teacher', 'Opettajat').replace('Student', 'Opiskelijat').replace('Leader', 'Koulujen johtajat'); 
-          if(!this.resource[0].acf.minimum_age){this.age=""}
+          if(!this.resource[0].acf.minimum_age||!this.resource[0].acf.maximum_age){this.age=""}
           else {this.age=this.resource[0].acf.minimum_age + " - " + this.resource[0].acf.maximum_age;this.agePrefix="Ikähaarukka: ";}
       }
       if(country=="portugal"){
@@ -209,7 +209,7 @@ computed: {
            this.targetPrefix='Alvo: ' ;
            this.target=this.resource[0].acf.target.join(', ');
            this.target=this.target.replace('Teacher', 'Professores').replace('Student', 'Alunos').replace('Leader', 'Líderes escolares');
-          if(!this.resource[0].acf.minimum_age){this.age=""}
+          if(!this.resource[0].acf.minimum_age||!this.resource[0].acf.maximum_age){this.age=""}
           else {this.age=this.resource[0].acf.minimum_age + " - " + this.resource[0].acf.maximum_age;this.agePrefix="Faixa etária: ";}
       }
       if(country=="sweden"){
@@ -225,7 +225,7 @@ computed: {
            this.targetPrefix='Rikta in dig på människor: ' ;
            this.target=this.resource[0].acf.target.join(', ');
            this.target=this.target.replace('Teacher', 'Lärare').replace('Student', 'Studenter').replace('Leader', 'Skolledare');
-          if(!this.resource[0].acf.minimum_age){this.age=""}
+          if(!this.resource[0].acf.minimum_age||!this.resource[0].acf.maximum_age){this.age=""}
           else {this.age=this.resource[0].acf.minimum_age + " - " + this.resource[0].acf.maximum_age;this.agePrefix="Åldersintervall: ";}
       }    
     }
