@@ -1,16 +1,14 @@
 <template>
 <div class="resource">
-    <i :title="icon" class="fa-solid fa-link icon" v-if="this.icon=='webpage'"></i>
-    <i :title="icon" class="fa-solid fa-video icon" v-if="this.icon=='videoTutorial'"></i>
-    <i :title="icon" class="fa-solid fa-wrench icon" v-if="this.icon=='tool'"></i>
-    <i :title="icon" class="fa-regular fa-file icon" v-if="this.icon=='document'"></i>
-    <i :title="icon" class="fa-regular fa-file-excel icon" v-if="this.icon=='spreadsheet'"></i>
-    <i :title="icon" class="fa-solid fa-chalkboard-user icon" v-if="this.icon=='lms'"></i>
-    <i :title="icon" class="fa-solid fa-pager icon" v-if="this.icon=='cms'"></i>
+    <i :title="icon" class="fa-solid fa-link icon" v-if="this.icon=='Webpage'"></i>
+    <i :title="icon" class="fa-solid fa-video icon" v-if="this.icon=='Video'"></i>
+    <i :title="icon" class="fa-solid fa-wrench icon" v-if="this.icon=='Tool'"></i>
+    <i :title="icon" class="fa-solid fa-file icon" v-if="this.icon=='Document'"></i>
+    <i :title="icon" class="fa-regular fa-file-excel icon" v-if="this.icon=='Spreadsheet'"></i>
+    <i :title="icon" class="fa-solid fa-chalkboard-user icon" v-if="this.icon=='LMS'"></i>
+    <i :title="icon" class="fa-solid fa-pager icon" v-if="this.icon=='CMS'"></i>
     <i v-if="ageRange" title="Target age group" class=age_group>{{resource.acf.minimum_age}} - {{resource.acf.maximum_age}}</i>
-    <!-- <h4>{{resource.acf.minimum_age}}</h4><h4>{{resource.acf.maximum_age}}</h4> -->
-    <!-- <i class="fa-solid fa-arrow-up-right-from-square expand"></i> -->
-    <!-- <i class="fa-regular fa-paper-plane expand"></i> -->
+    <i v-if="downloadable" title="Download" class="fa-solid fa-download download"></i>
     <p class="resTitle">{{resource.title.rendered}}</p>
 </div>
 </template>
@@ -25,6 +23,7 @@ export default {
        return{
          icon:String,
          ageRange:Boolean,
+         downloadable:false,
        }
    },
 
@@ -33,16 +32,17 @@ export default {
     },
    methods: {
        checkIcon(){
-           if(this.resource.acf.type_of_resource=="Webpage"){this.icon="webpage";}
-           if(this.resource.acf.type_of_resource=="Video tutorial"){this.icon="videoTutorial";}
-           if(this.resource.acf.type_of_resource=="Tool"){this.icon="tool";}
-           if(this.resource.acf.type_of_resource=="CMS"){this.icon="cms";}
-           if(this.resource.acf.type_of_resource=="LMS"){this.icon="lms";}
-           if(this.resource.acf.type_of_resource=="Document"){this.icon="document";}
-           if(this.resource.acf.type_of_resource=="Spreadsheet"){this.icon="spreadsheet";}
+           if(this.resource.acf.type_of_resource=="Webpage"){this.icon="Webpage";}
+           if(this.resource.acf.type_of_resource=="Video tutorial"){this.icon="Video";}
+           if(this.resource.acf.type_of_resource=="Tool"){this.icon="Tool";}
+           if(this.resource.acf.type_of_resource=="CMS"){this.icon="CMS";}
+           if(this.resource.acf.type_of_resource=="LMS"){this.icon="LMS";}
+           if(this.resource.acf.type_of_resource=="Document"){this.icon="Document";}
+           if(this.resource.acf.type_of_resource=="Spreadsheet"){this.icon="Spreadsheet";}
 
-           if(this.resource.acf.minimum_age==""){this.ageRange=false}
-       }
+           if(!this.resource.acf.minimum_age || !this.resource.acf.maximum_age){this.ageRange=false}
+           if(this.resource.acf.downloadable){this.downloadable=true}
+       },
    }
 }
 </script>
@@ -112,6 +112,17 @@ export default {
     cursor:pointer;
     vertical-align:middle;
     background-color: rgb(242, 242, 155)
+}
+
+.download{
+   position: absolute;
+   right: 10px;
+   top: 10px;
+   font-size:1rem; 
+}
+.resource:hover .age_group{ 
+	background-color: rgb(255, 255, 255);
+    border:1px solid rgb(255, 255, 255);
 }
 
 a{

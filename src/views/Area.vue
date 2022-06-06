@@ -15,13 +15,14 @@
   <h2 id="categories_title"><router-link :to="{ name: 'Country', params: { country: this.country }}"><i id="back" title="Back to Areas" class="fa-solid fa-circle-arrow-left" ></i></router-link>
       {{areaPrefix}}: <span class=area>{{areaName}}</span></h2>
 <div class="resourceBox">
+  <a id="target">{{schoolHeader}}:</a>
   <div id="filter" >
-    <a id="target">{{schoolHeader}}:</a>
+    
     <a :class='all ? "buttonT" : "buttonF"' @click="getAll()">{{schools[0]}}</a>
-    <a :class='primary ? "buttonT" : "buttonF"' @click="schoolFilter(89)">{{schools[1]}}</a>
-    <a :class='lowerS ? "buttonT" : "buttonF"' @click="schoolFilter(90)">{{schools[2]}}</a>
-    <a :class='upperS ? "buttonT" : "buttonF"' @click="schoolFilter(218)">{{schools[3]}}</a>
-    <a :class='vocational ? "buttonT" : "buttonF"' @click="schoolFilter(220)">{{schools[4]}}</a>
+    <a :class='primary ? "buttonT" : "buttonF"' @click="schoolFilter(this.pID)">{{schools[1]}}</a>
+    <a :class='lowerS ? "buttonT" : "buttonF"' @click="schoolFilter(this.lID)">{{schools[2]}}</a>
+    <a :class='upperS ? "buttonT" : "buttonF"' @click="schoolFilter(this.uID)">{{schools[3]}}</a>
+    <a :class='vocational ? "buttonT" : "buttonF"' @click="schoolFilter(this.vID)">{{schools[4]}}</a>
   </div>
   <!-- Lista risorse -->
     <div class="resources">
@@ -51,7 +52,6 @@ export default {
   data(){
     return{
     area:{},
-    languageId:Number,
     resources:[],
     filteredRes:[],
 
@@ -80,8 +80,12 @@ export default {
     subscription:String,
 
     targetSchool:Array,
-    school:['', '', '', '', '']
+    school:['', '', '', '', ''],
     
+    pID:Number,
+    lID:Number,
+    uID:Number,
+    vID:Number
     }
   },
   created (){
@@ -98,7 +102,7 @@ export default {
       this.getResource(this.area[0].id)
     },
     async getResource(area) {
-      const response = await fetch('https://shelfie.labcd.unipi.it/wp-json/wp/v2/resource?areas='+area)
+      const response = await fetch('https://shelfie.labcd.unipi.it/wp-json/wp/v2/resource?areas='+area+'&per_page=100')
       const data = await response.json()
       this.resources = data;
       this.getAll();
@@ -108,13 +112,13 @@ export default {
         const data = await response.json()
     }, */
     setCountryStyle(){ 
-                                    //for Documentation title  //for text before Area name
-          if(this.country=="italy"){this.countryResources='Risorse italiane'; this.areaPrefix='Area'; this.languageId=19; this.schoolHeader="Scuole target"; this.schools[0]="Tutte";this.schools[1]="Primaria";this.schools[2]="Secondaria di primo grado";this.schools[3]="Secondaria di secondo grado";this.schools[4]="Professionale";};
-          if(this.country=="ireland"){this.countryResources='Irish Resources'; this.areaPrefix='Area';this.languageId=2; this.schoolHeader="Target school"; this.schools[0]="All";this.schools[1]="Primary";this.schools[2]="Lower secondary";this.schools[3]="Upper secondary";this.schools[4]="Vocational";};
-          if(this.country=="denmark"){this.countryResources='Danske Ressourcer'; this.areaPrefix='Område';this.languageId=18; this.schoolHeader="Target school"; this.schools[0]="All";this.schools[1]="Primary";this.schools[2]="Lower secondary";this.schools[3]="Upper secondary";this.schools[4]="Vocational";};
-          if(this.country=="finland"){this.countryResources='Suomalaiset Resurssit'; this.areaPrefix='Alue';this.languageId=20; this.schoolHeader="Target school"; this.schools[0]="All";this.schools[1]="Primary";this.schools[2]="Lower secondary";this.schools[3]="Upper secondary";this.schools[4]="Vocational";};
-          if(this.country=="portugal"){this.countryResources='Recursos portugueses'; this.areaPrefix='Área';this.languageId=16; this.schoolHeader="Target school"; this.schools[0]="All";this.schools[1]="Primary";this.schools[2]="Lower secondary";this.schools[3]="Upper secondary";this.schools[4]="Vocational";};
-          if(this.country=="sweden"){this.countryResources='Svenska Resurser'; this.areaPrefix='Området';this.languageId=17; this.schoolHeader="Target school"; this.schools[0]="All";this.schools[1]="Primary";this.schools[2]="Lower secondary";this.schools[3]="Upper secondary";this.schools[4]="Vocational";};
+                                    //for Documentation title  //for text before Area name               
+          if(this.country=="italy"){this.countryResources='Risorse italiane'; this.areaPrefix='Area'; this.schoolHeader="Scuole target"; this.schools[0]="Tutte";this.schools[1]="Primaria";this.schools[2]="Secondaria di primo grado";this.schools[3]="Secondaria di secondo grado";this.schools[4]="Professionale"; this.pID=304; this.lID=306; this.uID=308; this.vID=310};
+          if(this.country=="ireland"){this.countryResources='Irish Resources'; this.areaPrefix='Area'; this.schoolHeader="Target school"; this.schools[0]="All";this.schools[1]="Primary";this.schools[2]="Lower secondary";this.schools[3]="Upper secondary";this.schools[4]="Vocational"; this.pID=89; this.lID=90; this.uID=218; this.vID=220};
+          if(this.country=="denmark"){this.countryResources='Danske Ressourcer'; this.areaPrefix='Område'; this.schoolHeader="Målskole"; this.schools[0]="Alle";this.schools[1]="Grundskole 0-6 klasse";this.schools[2]="Grundskole 7-9 (10) klasse";this.schools[3]="Alment gymnasium";this.schools[4]="Erhvervsskole"; this.pID=322; this.lID=324; this.uID=327; this.vID=329};
+          if(this.country=="finland"){this.countryResources='Suomalaiset Resurssit'; this.areaPrefix='Alue'; this.schoolHeader="Kohdekoulu"; this.schools[0]="kaikki";this.schools[1]="Alakoulu";this.schools[2]="Yläkoulu";this.schools[3]="Toisen asteen koulutus/oppilaitos";this.schools[4]="Ammattikoulu"; this.pID=331; this.lID=333; this.uID=335; this.vID=337};
+          if(this.country=="portugal"){this.countryResources='Recursos portugueses'; this.areaPrefix='Área'; this.schoolHeader="Nível de ensino"; this.schools[0]="Todos";this.schools[1]="1º ciclo do Ensino Básico";this.schools[2]="2º ciclo do Ensino Básico";this.schools[3]="3º ciclo do Ensino Básico";this.schools[4]="Ensino Secundário"; this.pID=312; this.lID=316; this.uID=318; this.vID=320};
+          if(this.country=="sweden"){this.countryResources='Svenska Resurser'; this.areaPrefix='Området'; this.schoolHeader="Målskola"; this.schools[0]="Alla";this.schools[1]="Grundskolans - Högstadiet";this.schools[2]="Grundskolan - Mellanstadiet";this.schools[3]="Grundskolan - Lågstadiet";this.schools[4]="Gymnasieskola"; this.pID=339; this.lID=341; this.uID=343; this.vID=345};
           
           //for Area name, solution for faster loading page instead of retrieving area.name from area object
           this.areaName= this.areaSlug.charAt(0).toUpperCase() + this.areaSlug.slice(1).replaceAll('-', ' ')
@@ -145,10 +149,10 @@ export default {
     },
     filterStyle(id){
       this.all=false;this.primary=false;this.lowerS=false;this.upperS=false;this.vocational=false;
-      if(id==89){this.primary=true};
-      if(id==90){this.lowerS=true};
-      if(id==218){this.upperS=true};
-      if(id==220){this.vocational=true};
+      if(id==89||id==304||id==312||id==322||id==331||id==339){this.primary=true};
+      if(id==90||id==306||id==316||id==324||id==333||id==341){this.lowerS=true};
+      if(id==218||id==308||id==318||id==327||id==335||id==343){this.upperS=true};
+      if(id==220||id==310||id==320||id==329||id==337||id==345){this.vocational=true};
     },
  
      checkIcon(resource){
@@ -171,17 +175,6 @@ export default {
      if(this.country=="portugal"){this.emptyMessage="Nenhum recurso encontrado nesta Área"}
      if(this.country=="sweden"){this.emptyMessage="Inga resurser hittades i detta Område"}
     },
-    transformText(){
-        if(this.expandedResource.acf.can_edit==false) {this.canEdit="Modificabile: No"}
-          else this.canEdit="Moficabile: Sì";
-        if(this.expandedResource.acf.subscription==false) {this.subscription="Sottoscrizione: No"}
-          else this.canEdit="Sottoscrizione: Sì";
-        if(this.expandedResource.acf.learning_need==""){this.learning_need=""}
-          else this.learning_need="Bisogno di apprendimento: "+this.expandedResource.acf.learning_need.join(', ');
-          this.learning_need=this.learning_need.replace('Manage video content', 'Gestire  contenuti video').replace('Manage interactive activity content', 'Gestire contenuti di attività interattive').replace('Manage audio content','Gestire contenuti audio').replace('Manage learning content','Gestire contenuti didattici').replace('Communicate and discuss','Comunicare e discutere').replace('Engagement', 'Coinvolgere').replace('Manage reading content','Gestire contenuti di lettura').replace('Share document','Condividere documenti').replace('Manage image content', 'Gestire contenuti immagine').replace('Manage document','Gestire documenti').replace('Manage sheet', 'Gestire fogli elettronici').replace('Manage presentation','Gestire presentazioni').replace('Brain storming and share ideas','Brain storming e condivisione di idee').replace('Collaborative programming tools','Strumenti di programmazione collaborativa').replace('Coding','Codifica').replace('Create a website','Creare un sito web');
-           this.target="Target: "+ this.expandedResource.acf.target.join(', ');
-           this.target=this.target.replace('Teacher', 'Insegnanti').replace('Student', 'Studenti').replace('Leader', 'Dirigenti scolastici');
-      }
   }
 }
 </script>
@@ -191,15 +184,15 @@ export default {
   justify-content: flex-start;
   flex-flow: row wrap;
   align-items: center;
-  width:100%;
 }
 #target{
+  float:left;
   font-size: 1.1rem;;
   margin-left:0rem;
   margin-right: 0.6rem;
   font-weight: bold;
   color:white;
-  margin-top:0.35rem;
+  margin-top:0.7rem;
 }
 .buttonF{
   padding-top:0.3rem;
@@ -238,7 +231,7 @@ export default {
   margin-top:0.5rem;
 }
 .resourceBox{
-  width:80%;
+  width:82%;
   margin: 0 auto;
   margin-top:2.5rem;
 }
@@ -250,18 +243,6 @@ export default {
   padding-bottom:1.5rem;
   width:100.7%;
   border-bottom:3px solid white;
-}
-.expanded-resource{
-  position: relative;
-    background-color: white;
-    min-height: 28rem;
-    margin: 0 auto;
-    margin-top:-1rem;
-    width:64rem;
-    border-radius: 20px;
-    word-wrap: break-word;
-    border: 1px solid;
-  /* box-shadow: 10px 10px 30px 1px rgb(211, 255, 254) inset; */
 }
 .typeOfResource{
   position:absolute;
@@ -520,9 +501,23 @@ transform: scale(1.3);
   .ul{
     justify-content: center;
   }
+  #filter{
+    justify-content: center;
+  }
   
  }
+ @media (max-width: 1088px) {
+   .resources{
+  justify-content: center;
+  }
+ }
  @media (max-width: 800px) {
+   #filter{
+     width:100%;
+   }
+   #target{
+    float:none;
+   }
   li{
     width:16rem;
   }
@@ -535,7 +530,7 @@ transform: scale(1.3);
     justify-content: center;
     margin-left:0rem;
     left:0rem;
-    top:1.2rem;
+    top:1rem;
   }
   #categories_title{
     margin-top:0.8rem;
@@ -562,10 +557,7 @@ transform: scale(1.3);
 @media (max-width: 400px) {
     .header_box{
     left:0rem;
-    top:1.8rem;
-  }
- #filter{
-    justify-content: center;
+    top:1.6rem;
   }
   #categories_title{
     margin-top:1.2rem;

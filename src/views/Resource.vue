@@ -12,7 +12,7 @@
       <img class="icona" alt="Country flag" :src="require(`../assets/${country}.png`)" >
       <h3 id="countryTitle">{{countryResources}}</h3>
     </div>
-
+    <h2 id="categories_title">{{areaPrefix}}: <span class=area>{{areaName}}</span></h2>
     <div class="resourceBox">
   <div class="expanded-resource">
     <div class="resContent">
@@ -20,7 +20,7 @@
       <i class="fa-solid fa-link icon" v-if="this.icon=='webpage'"></i>
       <i class="fa-solid fa-video icon" v-if="this.icon=='videoTutorial'"></i>
       <i class="fa-solid fa-wrench icon" v-if="this.icon=='tool'"></i>
-      <i class="fa-regular fa-file icon" v-if="this.icon=='document'"></i>
+      <i class="fa-solid fa-file icon" v-if="this.icon=='document'"></i>
       <i class="fa-regular fa-file-excel icon" v-if="this.icon=='spreadsheet'"></i>
       <i class="fa-solid fa-pager icon" v-if="this.icon=='cms'"></i>
       <h4 class="typeOfResource">{{typeOfResource}}</h4>
@@ -78,7 +78,10 @@ export default {
     agePrefix:'',
     canEditPrefix:'',
     subscriptionPrefix:'',
-    linkPrefix:''
+    linkPrefix:'',
+
+    areaPrefix:'',
+    areaName:'',
     }
   },
   created(){
@@ -101,12 +104,16 @@ computed: {
     },
     setCountryStyle(){ 
           //for Documentation title
-          if(this.country=="italy"){this.countryResources='Risorse italiane'};
-          if(this.country=="ireland"){this.countryResources='Irish Resources'};
-          if(this.country=="denmark"){this.countryResources='Danske Ressourcer'};
-          if(this.country=="finland"){this.countryResources='Suomalaiset Resurssit'};
-          if(this.country=="portugal"){this.countryResources='Recursos portugueses'};
-          if(this.country=="sweden"){this.countryResources='Svenska Resurser'};
+          if(this.country=="italy"){this.countryResources='Risorse italiane';this.areaPrefix='Area';};
+          if(this.country=="ireland"){this.countryResources='Irish Resources';this.areaPrefix='Area';};
+          if(this.country=="denmark"){this.countryResources='Danske Ressourcer';this.areaPrefix='Område';};
+          if(this.country=="finland"){this.countryResources='Suomalaiset Resurssit';this.areaPrefix='Alue';};
+          if(this.country=="portugal"){this.countryResources='Recursos portugueses';this.areaPrefix='Área';};
+          if(this.country=="sweden"){this.countryResources='Svenska Resurser';this.areaPrefix='Området';};
+
+          //for Area name, solution for faster loading page instead of retrieving area.name from area object
+          this.areaName= this.areaSlug.charAt(0).toUpperCase() + this.areaSlug.slice(1).replaceAll('-', ' ')
+          if(this.areaName.includes("Leadership")){this.areaName="Leadership"}
       },
     checkIfEmpty(){
       if(this.resources.length === 0){this.allEmpty=true;}
@@ -273,6 +280,9 @@ computed: {
   margin: 0 auto;
   margin-top:3rem;
 }
+.area{
+  color:#f8b12c;
+}
 .resources{
   padding-top:3rem;
   display: flex;
@@ -288,7 +298,7 @@ computed: {
 .expanded-resource{
   position: relative;
     background-color: white;
-    min-height: 28rem;
+    min-height: 26rem;
     margin: 0 auto;
     margin-top:-1rem;
     width:85%;
@@ -299,13 +309,13 @@ computed: {
 .typeOfResource{
   position:absolute;
   left:4rem;
-  top:1.2rem;
+  top:1.45rem;
 }
 .icon{
     position: absolute;
-   left: 2rem;
-   top: 2.4rem;
-   font-size:1.2rem;
+   left: 1.9rem;
+   top: 2.35rem;
+   font-size:1.5rem;
 }
 .resContent{
   max-width:80%;
@@ -313,7 +323,7 @@ computed: {
   padding-bottom:3rem;
 }
 .resText{
-  padding-top:1.5rem;
+  padding-top:1.2rem;
   text-align: justify;
   line-height: 1.6rem;
 }
@@ -429,8 +439,8 @@ li{
   display: inline-block;
   width:80%;
   margin-bottom: 0.5rem;
-   margin-top:3rem;
-  line-height: 1.4rem;
+   margin-top:4rem;
+  line-height: 1.5rem;
 }
 .cat-description{
   display: inline-block;
@@ -489,13 +499,13 @@ color:#ee8003;
 transform: scale(1.3);
 }
 .header_box{
-  padding-top:1rem;
-  width:100%;
-  display: inline-flex;
-  text-align: left;
+  position:absolute;
+  margin-left:1rem;
+  left:4.5%;
+  top:2rem;
+  display:flex
 }
 .icona{
-  margin-left:0.7rem;
   margin-top:10px;
   width:30px;
   height:30px;
@@ -511,8 +521,8 @@ transform: scale(1.3);
   color:white;
   font-size:1.4rem;
   margin: 0 auto;
-  margin-top:-2.1rem;
-  padding-bottom:1.5rem;
+  margin-top:2.1rem;
+  padding-bottom:1rem;
 }
 .subTitles{
   color: white;
@@ -546,9 +556,7 @@ transform: scale(1.3);
   
 }
 @media (min-width: 800px) and (max-width: 1100px) {
-.title{
-  width:60%;
-  }
+
 }
  @media (max-width: 800px) {
    .title{
@@ -566,7 +574,11 @@ transform: scale(1.3);
     justify-content: center;
     margin-left:0rem;
     left:0rem;
-    top:0rem;
+    top:1rem;
+  }
+  #categories_title{
+    margin-top:0.8rem;
+    padding-bottom:0rem;
   }
   .title{
   margin-top:6.5rem;
@@ -599,13 +611,23 @@ transform: scale(1.3);
 @media (max-width: 400px) {
     .header_box{
     left:0rem;
-    top:0rem;
+    top:1.6rem;
   }
   .fa-house {
     top:1.1rem;
   }
+  #categories_title{
+    margin-top:1.2rem;
+    padding-bottom:0.8rem;
+  }
 }
 @media (min-width: 801px) and (max-width: 1100px) {
-   
+   #categories_title{
+   max-width:20rem;
+   line-height: 2rem;
+  }
+  .title{
+  width:60%;
+  }
 }
 </style>
