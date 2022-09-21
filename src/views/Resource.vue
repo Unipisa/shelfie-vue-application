@@ -23,17 +23,22 @@
       <i class="fa-solid fa-file icon" v-if="this.icon=='document'"></i>
       <i class="fa-regular fa-file-excel icon" v-if="this.icon=='spreadsheet'"></i>
       <i class="fa-solid fa-pager icon" v-if="this.icon=='cms'"></i>
+      <i  class="fa-solid fa-book icon" v-if="this.icon=='Research'"></i>
+      <i class="fa-solid fa-file-signature icon" v-if="this.icon=='Worksheet'"></i>
+      <i class="fa-solid fa-rectangle-list icon" v-if="this.icon=='Course descriptions'"></i>
       <h4 class="typeOfResource">{{typeOfResource}}</h4>
       <h2 class="title">{{titleRendered}}</h2>
       <div class="resText">
         <p>{{description}}</p>
         <p><span class="field">{{targetPrefix}}</span>{{target}}</p>
         <p><span class="field"></span>{{school}}</p>
-        <p><span class="field">{{agePrefix}}</span>{{age}}</p>
+        <p><span class="field">{{agePrefix}}</span><i v-if="ageGroup" class=age_group>{{age}}</i></p>
         <p><span class="field">{{learning_needPrefix}}</span>{{learning_need}}</p>
         <p><span class="field">{{canEditPrefix}}</span>{{canEdit}}</p>
         <p><span class="field">{{subscriptionPrefix}}</span>{{subscription}}</p>
+        <p class="field" v-if="downloadable">{{downloadablePrefix}}<i class="fa-solid fa-download download"></i></p>
         <p><span class="field">{{linkPrefix}}</span><a :href="link" target="_blank">{{link}}</a></p>
+        
       </div>
     </div>
 </div>
@@ -79,6 +84,9 @@ export default {
     canEditPrefix:'',
     subscriptionPrefix:'',
     linkPrefix:'',
+    downloadable:false,
+    ageGroup:false,
+    downloadablePrefix:'',
 
     areaPrefix:'',
     areaName:'',
@@ -93,6 +101,7 @@ computed: {
 },
   methods:{
     async getResourceBySlug(slug){
+      try{
       const response = await fetch('https://shelfie.labcd.unipi.it/wp-json/wp/v2/resource?slug='+slug)
       const data = await response.json()
       this.resource = data;
@@ -101,6 +110,10 @@ computed: {
       this.description=this.resource[0].acf.description;
       this.transformText(this.country);
       this.checkIcon(this.resource)
+      }
+      catch (error) {
+      this.$router.push('/404')
+      }
     },
     setCountryStyle(){ 
           //for Documentation title
@@ -127,12 +140,20 @@ computed: {
            if(resource[0].acf.type_of_resource=="LMS"){this.icon="lms";}
            if(resource[0].acf.type_of_resource=="Document"){this.icon="document";}
            if(resource[0].acf.type_of_resource=="Spreadsheet"){this.icon="spreadsheet";}
+
+           if(resource[0].acf.type_of_resource=="Research"){this.icon="Research";}
+           if(resource[0].acf.type_of_resource=="Worksheet for students"){this.icon="Worksheet";}
+           if(resource[0].acf.type_of_resource=="Course descriptions"){this.icon="Course descriptions";}
+
+            
        },
     //Fields Translation
     transformText(country){
       this.linkPrefix="Link: ";
+      if(this.resource[0].acf.downloadable){this.downloadable=true;}
       this.link=this.resource[0].acf.link;
-      if(country=="italy"){   
+      if(country=="italy"){ 
+        this.downloadablePrefix="Scaricabile ";  
         this.canEditPrefix='Personalizzabile: ';
         if(this.resource[0].acf.can_edit==false) {this.canEdit="No"}
           else this.canEdit="Sì";
@@ -146,9 +167,10 @@ computed: {
           this.target=this.resource[0].acf.target.join(', ');
           this.target=this.target.replace('Teacher', 'Insegnanti').replace('Student', 'Studenti').replace('Leader', 'Dirigenti scolastici');
           if(!this.resource[0].acf.minimum_age||!this.resource[0].acf.maximum_age){this.age=" "}
-          else {this.age=this.resource[0].acf.minimum_age + " - " + this.resource[0].acf.maximum_age;this.agePrefix="Fascia d'età: ";}
+          else {this.age=this.resource[0].acf.minimum_age + " - " + this.resource[0].acf.maximum_age;this.agePrefix="Fascia d'età: "; this.ageGroup=true}
       }
       if(country=="ireland"){
+        this.downloadablePrefix="Downloadable ";
         this.canEditPrefix='Customisable: ';
         if(this.resource[0].acf.can_edit==false){this.canEdit="No"}
         else this.canEdit="Yes";
@@ -156,15 +178,16 @@ computed: {
         if(this.resource[0].acf.subscription==false) {this.subscription="No"}
           else this.subscription="Yes";
         if(this.resource[0].acf.learning_need==""){this.learning_need=""}
-         else {this.learning_need=+this.resource[0].acf.learning_need.join(', ');this.learning_needPrefix='Learning need: ';}
+         else {this.learning_need=this.resource[0].acf.learning_need.join(', ');this.learning_needPrefix='Learning need: ';}
         //  this.learning_need=this.learning_need.replace('Manage video content',).replace('Manage interactive activity content',).replace('Manage audio content',).replace('Manage learning content',).replace('Communicate and discuss',).replace('Engagement',).replace('Manage reading content',).replace('Share document').replace('Manage image content',).replace('Manage document',).replace('Manage sheet',).replace('Manage presentation',).replace('Brain storming and share ideas',).replace('Collaborative programming tools',).replace('Coding',).replace('Create a website',);
            this.targetPrefix='Target: ' ;
            this.target=this.resource[0].acf.target.join(', ');
            this.target=this.target.replace('Teacher', 'Teachers').replace('Student', 'Students').replace('Leader', 'School leaders');
           if(!this.resource[0].acf.minimum_age||!this.resource[0].acf.maximum_age){this.age=""}
-          else {this.age=this.resource[0].acf.minimum_age + " - " + this.resource[0].acf.maximum_age;this.agePrefix="Age range: ";}
+          else {this.age=this.resource[0].acf.minimum_age + " - " + this.resource[0].acf.maximum_age;this.agePrefix="Age range: "; this.ageGroup=true}
       }
       if(country=="denmark"){
+        this.downloadablePrefix="Kan downloades ";
         this.canEditPrefix='Kan tilpasses: ';
         if(this.resource[0].acf.can_edit==false){this.canEdit="Nej"}
         else this.canEdit="Ja";
@@ -178,9 +201,10 @@ computed: {
            this.target=this.resource[0].acf.target.join(', ');
            this.target=this.target.replace('Teacher', 'Lærere').replace('Student', 'Studerende').replace('Leader', 'Skoleledere');
           if(!this.resource[0].acf.minimum_age||!this.resource[0].acf.maximum_age){this.age=""}
-          else {this.age=this.resource[0].acf.minimum_age + " - " + this.resource[0].acf.maximum_age;this.agePrefix="Aldersspænd: ";}
+          else {this.age=this.resource[0].acf.minimum_age + " - " + this.resource[0].acf.maximum_age;this.agePrefix="Aldersspænd: ";this.ageGroup=true}
       }
-      if(country=="finland"){  
+      if(country=="finland"){
+        this.downloadablePrefix="Ladattavissa ";
         this.canEditPrefix='Muokattava: ';
         if(this.resource[0].acf.can_edit==false){this.canEdit="Ei"}
         else this.canEdit="Kyllä";
@@ -194,9 +218,10 @@ computed: {
            this.target=this.resource[0].acf.target.join(', ');
            this.target=this.target.replace('Teacher', 'Opettajat').replace('Student', 'Opiskelijat').replace('Leader', 'Koulujen johtajat'); 
           if(!this.resource[0].acf.minimum_age||!this.resource[0].acf.maximum_age){this.age=""}
-          else {this.age=this.resource[0].acf.minimum_age + " - " + this.resource[0].acf.maximum_age;this.agePrefix="Ikähaarukka: ";}
+          else {this.age=this.resource[0].acf.minimum_age + " - " + this.resource[0].acf.maximum_age;this.agePrefix="Ikähaarukka: ";this.ageGroup=true}
       }
       if(country=="portugal"){
+        this.downloadablePrefix="Pode ser baixado ";
         this.canEditPrefix='Customizável: ';
         if(this.resource[0].acf.can_edit==false){this.canEdit="Não"}
         else this.canEdit="Sim";
@@ -210,9 +235,10 @@ computed: {
            this.target=this.resource[0].acf.target.join(', ');
            this.target=this.target.replace('Teacher', 'Professores').replace('Student', 'Alunos').replace('Leader', 'Líderes escolares');
           if(!this.resource[0].acf.minimum_age||!this.resource[0].acf.maximum_age){this.age=""}
-          else {this.age=this.resource[0].acf.minimum_age + " - " + this.resource[0].acf.maximum_age;this.agePrefix="Faixa etária: ";}
+          else {this.age=this.resource[0].acf.minimum_age + " - " + this.resource[0].acf.maximum_age;this.agePrefix="Faixa etária: ";this.ageGroup=true}
       }
       if(country=="sweden"){
+        this.downloadablePrefix="Nedladdningsbar ";
         this.canEditPrefix='Anpassningsbar: ';
         if(this.resource[0].acf.can_edit==false){this.canEdit="Nej"}
         else this.canEdit="Ja";
@@ -226,7 +252,7 @@ computed: {
            this.target=this.resource[0].acf.target.join(', ');
            this.target=this.target.replace('Teacher', 'Lärare').replace('Student', 'Studenter').replace('Leader', 'Skolledare');
           if(!this.resource[0].acf.minimum_age||!this.resource[0].acf.maximum_age){this.age=""}
-          else {this.age=this.resource[0].acf.minimum_age + " - " + this.resource[0].acf.maximum_age;this.agePrefix="Åldersintervall: ";}
+          else {this.age=this.resource[0].acf.minimum_age + " - " + this.resource[0].acf.maximum_age;this.agePrefix="Åldersintervall: ";this.ageGroup=true}
       }    
     }
   }
@@ -509,6 +535,20 @@ transform: scale(1.3);
   margin-top:10px;
   width:30px;
   height:30px;
+}
+.age_group{
+    cursor:default;
+    padding-left:8px;
+    padding-right:8px;
+    color:rgb(0, 0, 0);
+    font-style: italic;
+    font-weight: bold;
+    border:1px solid rgb(221, 207, 57);
+    border-radius: 10px;
+    background:#DDD;
+    box-shadow: 2px 2px 0px -1px rgba(0, 0, 0, 0.2);
+    vertical-align:middle;
+    background-color: rgb(246, 233, 116)
 }
 #countryTitle{
   margin-left:0.2rem;

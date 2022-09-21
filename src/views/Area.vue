@@ -96,10 +96,17 @@ export default {
 
   methods:{
     async getAreaBySlug(slug){
+      try {
       const response = await fetch('https://shelfie.labcd.unipi.it/wp-json/wp/v2/areas?slug='+slug)
       const data = await response.json()
       this.area = data;
-      this.getResource(this.area[0].id)
+       this.getResource(this.area[0].id)
+      }
+      catch (error) {
+      this.$router.push('/404')
+        }
+      
+      
     },
     async getResource(area) {
       const response = await fetch('https://shelfie.labcd.unipi.it/wp-json/wp/v2/resource?areas='+area+'&per_page=100')
@@ -231,7 +238,7 @@ export default {
   margin-top:0.5rem;
 }
 .resourceBox{
-  width:82%;
+  width:86%;
   margin: 0 auto;
   margin-top:2.5rem;
 }

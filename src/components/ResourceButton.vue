@@ -7,6 +7,10 @@
     <i :title="icon" class="fa-regular fa-file-excel icon" v-if="this.icon=='Spreadsheet'"></i>
     <i :title="icon" class="fa-solid fa-chalkboard-user icon" v-if="this.icon=='LMS'"></i>
     <i :title="icon" class="fa-solid fa-pager icon" v-if="this.icon=='CMS'"></i>
+
+    <i :title="icon" class="fa-solid fa-book icon" v-if="this.icon=='Research'"></i>
+    <i :title="icon" class="fa-solid fa-file-signature icon" v-if="this.icon=='Worksheet'"></i>
+    <i :title="icon" class="fa-solid fa-rectangle-list icon" v-if="this.icon=='Course descriptions'"></i>
     <i v-if="ageRange" title="Target age group" class=age_group>{{resource.acf.minimum_age}} - {{resource.acf.maximum_age}}</i>
     <i v-if="downloadable" title="Download" class="fa-solid fa-download download"></i>
     <p class="resTitle">{{resource.title.rendered}}</p>
@@ -39,6 +43,11 @@ export default {
            if(this.resource.acf.type_of_resource=="LMS"){this.icon="LMS";}
            if(this.resource.acf.type_of_resource=="Document"){this.icon="Document";}
            if(this.resource.acf.type_of_resource=="Spreadsheet"){this.icon="Spreadsheet";}
+
+           if(this.resource.acf.type_of_resource=="Research"){this.icon="Research";}
+           if(this.resource.acf.type_of_resource=="Worksheet for students"){this.icon="Worksheet";}
+           if(this.resource.acf.type_of_resource=="Course descriptions"){this.icon="Course descriptions";}
+           console.log(this.resource.acf.type_of_resource);
 
            if(!this.resource.acf.minimum_age || !this.resource.acf.maximum_age){this.ageRange=false}
            if(this.resource.acf.downloadable){this.downloadable=true}
@@ -95,7 +104,6 @@ export default {
 }
 .age_group{
     position: absolute;
-    cursor: zoom-out;
     left: 35px;
     top: 8.5px;
     padding-left:8px;

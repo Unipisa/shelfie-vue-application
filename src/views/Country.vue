@@ -183,7 +183,7 @@ name: 'Country',
 li{
   box-sizing: border-box;
     list-style-image: none;
-    width: 21.37rem;
+    width: 25%;
     margin:0;
     padding: 0.5rem 0.5rem 0.5rem 0.5rem;
     display: block;

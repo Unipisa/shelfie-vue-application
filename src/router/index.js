@@ -1,6 +1,6 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import Home from '../views/Home.vue'
-/* import PageNotFound from '@/views/PageNotFound.vue' */
+import PageNotFound from '@/views/PageNotFound.vue'
 
 import Country from '../views/Country.vue'
 
@@ -14,11 +14,11 @@ const routes = [
         name: 'Home',
         component: Home
     },
-    /* {
-        path: '/:pathMatch(.*)*',
+    {
+        path: '/404',
         name: "PageNotFound",
         component: PageNotFound,
-    }, */
+    },
     {
         path: '/io2/:country',
         name: 'Country',
